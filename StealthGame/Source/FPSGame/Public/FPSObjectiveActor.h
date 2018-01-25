@@ -18,6 +18,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* MeshComp;
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	class USphereComponent* SphereComp;
 
 public:	
 	// Called every frame
