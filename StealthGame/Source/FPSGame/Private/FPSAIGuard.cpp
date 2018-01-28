@@ -7,6 +7,7 @@
 #include "FPSGameMode.h"
 #include "AIController.h"
 #include "AI/Navigation/NavigationSystem.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
@@ -97,6 +98,17 @@ void AFPSAIGuard::ResetOrientation()
 	MoveToNextPatrolPoint();
 }
 
+void AFPSAIGuard::OnRep_GuardState()
+{
+	OnStateChange(GuardState);
+}
+
+void AFPSAIGuard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AFPSAIGuard, GuardState);
+}
+
 void AFPSAIGuard::SetGuardState(EAIState NewState)
 {
 	if (GuardState == NewState)
@@ -104,13 +116,12 @@ void AFPSAIGuard::SetGuardState(EAIState NewState)
 		return;
 	}
 	GuardState = NewState;
-	OnStateChange(NewState);
-	
+	OnRep_GuardState();
 }
 
 void AFPSAIGuard::MoveToNextPatrolPoint()
 {
-	if (CurrentTargetIndex != -1)
+	if (CurrentTargetIndex != -1 && Role == ROLE_Authority)
 	{
 		CurrentTargetIndex = (CurrentTargetIndex + 1) % TargetPoints.Num();
 		ATargetPoint* Target = TargetPoints[CurrentTargetIndex];
