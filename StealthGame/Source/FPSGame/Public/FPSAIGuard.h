@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Engine/TargetPoint.h"
 #include "FPSAIGuard.generated.h"
 
 UENUM(BlueprintType)
@@ -36,6 +37,8 @@ protected:
 	UFUNCTION()
 	void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
 
+	void StopMovement();
+
 	FRotator OriginalRotation;
 
 	UFUNCTION()
@@ -47,8 +50,15 @@ protected:
 
 	void SetGuardState(EAIState NewState);
 
+	void MoveToNextPatrolPoint();
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
 	void OnStateChange(EAIState NewState);
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TArray<ATargetPoint*> TargetPoints;
+
+	int8 CurrentTargetIndex;
 
 public:	
 	// Called every frame

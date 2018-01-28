@@ -5,6 +5,8 @@
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h" 
 #include "FPSGameMode.h"
+#include "AIController.h"
+#include "AI/Navigation/NavigationSystem.h"
 
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
@@ -23,6 +25,15 @@ void AFPSAIGuard::BeginPlay()
 {
 	Super::BeginPlay();
 	OriginalRotation = GetActorRotation();
+	if (TargetPoints.Num() > 0)
+	{
+		CurrentTargetIndex = 0;
+		MoveToNextPatrolPoint();
+	}
+	else
+	{
+		CurrentTargetIndex = -1;
+	}
 	
 }
 
@@ -38,6 +49,7 @@ void AFPSAIGuard::OnPawnSeen(APawn * SeenPawn)
 		}
 	}
 	SetGuardState(EAIState::Alerted);
+	StopMovement();
 }
 
 void AFPSAIGuard::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, float Volume)
@@ -61,6 +73,16 @@ void AFPSAIGuard::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
 
 	SetGuardState(EAIState::Suspicious);
+	StopMovement();
+}
+
+void AFPSAIGuard::StopMovement()
+{
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->StopMovement();
+	}
 }
 
 void AFPSAIGuard::ResetOrientation()
@@ -72,6 +94,7 @@ void AFPSAIGuard::ResetOrientation()
 
 	SetActorRotation(OriginalRotation);
 	SetGuardState(EAIState::Idle);
+	MoveToNextPatrolPoint();
 }
 
 void AFPSAIGuard::SetGuardState(EAIState NewState)
@@ -82,6 +105,19 @@ void AFPSAIGuard::SetGuardState(EAIState NewState)
 	}
 	GuardState = NewState;
 	OnStateChange(NewState);
+	
+}
+
+void AFPSAIGuard::MoveToNextPatrolPoint()
+{
+	if (CurrentTargetIndex != -1)
+	{
+		CurrentTargetIndex = (CurrentTargetIndex + 1) % TargetPoints.Num();
+		ATargetPoint* Target = TargetPoints[CurrentTargetIndex];
+		if (!ensure(Target != nullptr)) return;
+
+		UNavigationSystem::SimpleMoveToActor(GetController(), Target);
+	}
 }
 
 // Called every frame
@@ -89,4 +125,18 @@ void AFPSAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CurrentTargetIndex != -1)
+	{
+		if (!ensure(TargetPoints[CurrentTargetIndex] != nullptr)) return;
+
+		FVector Delta = GetActorLocation() - TargetPoints[CurrentTargetIndex]->GetTargetLocation();
+
+		float DistanceToGoal = Delta.Size();
+		UE_LOG(LogTemp, Error, TEXT("The value of 'Delta' is: %f"), DistanceToGoal);
+		if (DistanceToGoal < 100)
+		{
+			MoveToNextPatrolPoint();
+		}
+	}
+	
 }
