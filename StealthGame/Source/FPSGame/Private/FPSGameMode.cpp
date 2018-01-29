@@ -26,13 +26,13 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bMissionSuccess)
 
 		TArray<AActor*> ReturnedActors;
 		UGameplayStatics::GetAllActorsOfClass(this, SpectatingViewpointClass, ReturnedActors);
-		
 		if (ReturnedActors.Num() > 0)
 		{
 			AActor* NewViewTarget = ReturnedActors[0];
 
 			for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
 			{
+
 				APlayerController* PC = It->Get();
 				if (PC)
 				{
@@ -41,6 +41,7 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bMissionSuccess)
 			}
 		}
 	}
+
 
 	AFPSGameState* GS = GetGameState<AFPSGameState>();
 	if (GS)

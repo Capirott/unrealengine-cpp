@@ -36,7 +36,7 @@ void ASWeapon::Fire()
 		FRotator EyeRotation;
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
-		FVector ShotDirection = EyeRotation.Vector();
+		const FVector ShotDirection = EyeRotation.Vector();
 		FVector TraceEnd = EyeLocation + (EyeRotation.Vector() * 10000);
 
 		FCollisionQueryParams QueryParams;
@@ -68,7 +68,8 @@ void ASWeapon::Fire()
 		if (!ensure(TracerEffect != nullptr)) return;
 
 		FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
-		UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, MuzzleLocation);
+		UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(), TracerEffect, MuzzleLocation);
 		if (TracerComp)
 		{
 			TracerComp->SetVectorParameter(TracerTargetName, TracerEndPoint);
