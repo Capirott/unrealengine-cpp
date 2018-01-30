@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SWeapon.h"
 #include "SCharacter.generated.h"
 
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
 {
-	GENERATED_BODY()
+GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
@@ -46,6 +47,16 @@ protected:
 	void BeginZoom();
 
 	void EndZoom();
+
+	ASWeapon* CurrentWeapon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Player")
+	TSubclassOf<ASWeapon> StartWeaponClass;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Player")
+	FName WeaponAttachSocketName;
+
+	void Fire();
 
 public:	
 	// Called every frame
