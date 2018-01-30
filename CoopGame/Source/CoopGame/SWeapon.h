@@ -38,7 +38,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	class UParticleSystem* TracerEffect;
 
-	void PlayFireEffects(FVector TracerEndPoint);
+	void PlayFireEffects(FVector TracerEndPoint) const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<class UCameraShake> FireCamShake;
 
 public:	
 
