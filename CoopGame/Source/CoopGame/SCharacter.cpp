@@ -7,6 +7,8 @@
 #include "Components/SkeletalMeshComponent.h"
 
 #include  "SWeapon.h"
+#include "Components/CapsuleComponent.h"
+#include "CoopGame.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -40,6 +42,7 @@ void ASCharacter::BeginPlay()
 		CurrentWeapon->SetOwner(this);
 		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
 	}
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 }
 
 void ASCharacter::MoveFoward(float Value)
