@@ -66,6 +66,10 @@ void ASWeapon::PlayFireEffects(FVector TracerEndPoint) const
 
 void ASWeapon::Fire()
 {
+	if (Role < ROLE_Authority)	
+	{
+		ServerFire();
+	}
 	AActor* MyOwner = GetOwner();
 	if (MyOwner)
 	{
@@ -133,4 +137,14 @@ void ASWeapon::StartFire()
 void ASWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
+}
+
+void ASWeapon::ServerFire_Implementation()
+{
+	Fire();
+}
+
+bool ASWeapon::ServerFire_Validate()
+{
+	return true;
 }
