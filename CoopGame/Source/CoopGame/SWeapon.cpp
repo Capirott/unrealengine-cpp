@@ -86,8 +86,6 @@ void ASWeapon::Fire()
 		if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, COLLISION_WEAPON, QueryParams))
 		{
 			AActor* HitActor = Hit.GetActor();
-			UE_LOG(LogTemp, Warning, TEXT("Actor hit %s"), *Hit.ToString());
-
 			const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 			float ActualDamage = BaseDamage;
 			if (SurfaceType == SURFACE_FLESHVULNERABLE)
