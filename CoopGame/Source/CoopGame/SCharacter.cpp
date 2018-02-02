@@ -95,15 +95,15 @@ void ASCharacter::StopFire()
 	}
 }
 
-void ASCharacter::OnHealthChanged(USHealthComponent* HealthComp, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCause)
+void ASCharacter::OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCause)
 {
 	if (Health <= 0.0f &&!bDied)
 	{
+		bDied = true;
 		GetMovementComponent()->StopMovementImmediately();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		DetachFromControllerPendingDestroy();
 		SetLifeSpan(10.0f);
-		bDied = true;
 	}
 }
 

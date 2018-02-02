@@ -18,7 +18,6 @@ void USHealthComponent::BeginPlay()
 		MyOwner->OnTakeAnyDamage.AddDynamic(this, &USHealthComponent::HandleTakeAnyDamage);
 	}	
 	Health = DefaultHealth;
-
 }
 
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)

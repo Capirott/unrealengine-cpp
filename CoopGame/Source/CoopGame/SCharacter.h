@@ -64,7 +64,7 @@ protected:
 	void StopFire();
 
 	UFUNCTION()
-	void OnHealthChanged(USHealthComponent* HealthComp, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCause);
+	void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCause);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Player")
 	bool bDied;
