@@ -46,7 +46,10 @@ ASTrackerBot::ASTrackerBot()
 void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
-	NextPathPoint = GetNextPathPoint();
+	if (Role == ROLE_Authority)
+	{
+		NextPathPoint = GetNextPathPoint();
+	}
 }
 
 void ASTrackerBot::HandleTakeDamage(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCause)
@@ -101,15 +104,17 @@ void ASTrackerBot::DamageSelf()
 void ASTrackerBot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	const float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
-	if (DistanceToTarget <= RequiredDistanceToTarget)
-	{
-		NextPathPoint = GetNextPathPoint();
-	}
-	else
-	{
-		const FVector ForceDirection = (NextPathPoint - GetActorLocation()).GetSafeNormal() * MovementForce;
-		MeshComp->AddForce(ForceDirection, NAME_None, bUseVelocityChange);
+	if (Role == ROLE_Authority) {
+		const float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
+		if (DistanceToTarget <= RequiredDistanceToTarget)
+		{
+			NextPathPoint = GetNextPathPoint();
+		}
+		else
+		{
+			const FVector ForceDirection = (NextPathPoint - GetActorLocation()).GetSafeNormal() * MovementForce;
+			MeshComp->AddForce(ForceDirection, NAME_None, bUseVelocityChange);
+		}
 	}
 }
 
