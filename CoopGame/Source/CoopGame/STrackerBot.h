@@ -23,6 +23,9 @@ protected:
 	UStaticMeshComponent* MeshComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	class USphereComponent* SphereComp;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	class USHealthComponent* HealthComp;
 
 	UFUNCTION()
@@ -50,13 +53,21 @@ protected:
 
 	bool bExploded;
 
+	bool bStartedSelfDestruction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
 	float ExplosionRadius;
 
 	UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
 	float ExplosionDamage;
 
+	FTimerHandle TimerHandle_SelfDamage;
+
+	void DamageSelf();
+
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void NotifyActorBeginOverlap(AActor* OtherActor) override;
 };
