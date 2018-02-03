@@ -8,6 +8,7 @@
 
 #include "SHealthComponent.h"
 #include "SCharacter.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -36,6 +37,13 @@ void ASTrackerBot::BeginPlay()
 
 void ASTrackerBot::HandleTakeDamage(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCause)
 {
+	if (MatInst == nullptr)
+	{
+		MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+	}
+	if (!ensure(MatInst != nullptr)) return;
+
+	MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
 	UE_LOG(LogTemp, Log, TEXT("Health %s of %s"), *FString::SanitizeFloat(Health), *GetName());
 }
 
