@@ -15,16 +15,20 @@ ASTrackerBot::ASTrackerBot()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	MeshComp->SetCanEverAffectNavigation(false);
+	MeshComp->SetSimulatePhysics(true);
 	RootComponent = MeshComp;
 
-	MeshComp->SetCanEverAffectNavigation(false);
+	bUseVelocityChange = true;
+	MovementForce = 1000.0f;
+	RequiredDistanceToTarget = 100;
 }
 
 // Called when the game starts or when spawned
 void ASTrackerBot::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	NextPathPoint = GetNextPathPoint();
 }
 
 FVector ASTrackerBot::GetNextPathPoint()
@@ -42,7 +46,16 @@ FVector ASTrackerBot::GetNextPathPoint()
 void ASTrackerBot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	const float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
+	if (DistanceToTarget <= RequiredDistanceToTarget)
+	{
+		NextPathPoint = GetNextPathPoint();
+	}
+	else
+	{
+		const FVector ForceDirection = (NextPathPoint - GetActorLocation()).GetSafeNormal() * MovementForce;
+		MeshComp->AddForce(ForceDirection, NAME_None, bUseVelocityChange);
+	}
 }
 
 
