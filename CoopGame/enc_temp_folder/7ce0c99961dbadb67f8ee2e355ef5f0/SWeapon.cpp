@@ -123,10 +123,6 @@ void ASWeapon::Fire()
 				ActualDamage *= 4.0f;
 			}
 			UGameplayStatics::ApplyPointDamage(HitActor, ActualDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
-			if (Hit.Component->IsSimulatingPhysics()) 
-			{
-				Hit.Component->AddImpulseAtLocation(Hit.ImpactNormal * -50000.0f, Hit.ImpactPoint);
-			}
 			PlayImpactEffects(SurfaceType, Hit.ImpactPoint);
 			TracerEndPoint = Hit.ImpactPoint;
 
