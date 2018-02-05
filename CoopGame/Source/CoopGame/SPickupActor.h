@@ -28,7 +28,7 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category = "PickupActor")
 	TSubclassOf<class ASPowerupActor> PowerupClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "PickupActor")
+	UPROPERTY(EditInstanceOnly, Category = "PickupActor")
 	float CooldownDuration;
 
 	FTimerHandle TimerHandle_RespawnTimer;
