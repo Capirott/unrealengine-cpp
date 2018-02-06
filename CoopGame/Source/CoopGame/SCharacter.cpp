@@ -11,6 +11,8 @@
 #include "CoopGame.h"
 #include "SHealthComponent.h"
 #include "UnrealNetwork.h"
+#include "STrackerBot.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -51,6 +53,19 @@ void ASCharacter::BeginPlay()
 			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
 		}
 		GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
+	}
+}
+
+void ASCharacter::AimBot(float Val) 
+{
+	for (auto It = GetWorld()->GetPawnIterator(); It; ++It)
+	{
+		auto* Bot = Cast<ASTrackerBot>(It->Get());
+		if (Bot && Cast<USHealthComponent>(Bot->GetComponentByClass(USHealthComponent::StaticClass()))->GetHealth() > 0.0f)
+		{
+			const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), Bot->GetActorLocation());
+			GetController()->SetControlRotation(Rotation);
+		}
 	}
 }
 
@@ -135,6 +150,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	
 	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &ASCharacter::AddControllerYawInput);
+	
+
+	PlayerInputComponent->BindAxis("AimBot", this, &ASCharacter::AimBot);
 
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ASCharacter::BeginCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ASCharacter::EndCrouch);
