@@ -92,7 +92,7 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 {
 	ASGameState* GameState = GetGameState<ASGameState>();
 	if (!ensure(GameState != nullptr)) return;
-	GameState->SetWaveState(NewState);
+	GameState->WaveState = NewState;
 }
 
 

@@ -58,13 +58,16 @@ void ASCharacter::BeginPlay()
 
 void ASCharacter::AimBot(float Val) 
 {
-	for (auto It = GetWorld()->GetPawnIterator(); It; ++It)
+	if (Val > 0.5f) 
 	{
-		auto* Bot = Cast<ASTrackerBot>(It->Get());
-		if (Bot && Cast<USHealthComponent>(Bot->GetComponentByClass(USHealthComponent::StaticClass()))->GetHealth() > 0.0f)
+		for (auto It = GetWorld()->GetPawnIterator(); It; ++It)
 		{
-			const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), Bot->GetActorLocation());
-			GetController()->SetControlRotation(Rotation);
+			auto* Bot = Cast<ASTrackerBot>(It->Get());
+			if (Bot && Cast<USHealthComponent>(Bot->GetComponentByClass(USHealthComponent::StaticClass()))->GetHealth() > 0.0f)
+			{
+				const FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), Bot->GetActorLocation());
+				GetController()->SetControlRotation(Rotation);
+			}
 		}
 	}
 }
