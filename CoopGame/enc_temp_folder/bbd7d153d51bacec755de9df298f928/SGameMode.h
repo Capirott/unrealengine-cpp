@@ -50,8 +50,6 @@ protected:
 
 	void SetWaveState(EWaveState NewState);
 
-	void RespawnDeadPlayers();
-
 public:
 
 	ASGameMode();
